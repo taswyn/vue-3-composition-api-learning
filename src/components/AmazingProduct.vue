@@ -1,12 +1,15 @@
 <template>
     <p>
         <h3>{{name}}</h3>
-       ${{price}}
-        <button @click="addToCart">Add to Cart</button>
+       {{priceFormatted}}
+       <input type="text" v-model="priceFormatted" />
+               <button @click="addToCart">Add to Cart</button>
     </p>
 </template>
 
-<script>import { useAttrs } from "@vue/runtime-core"
+<script>
+
+import { computed, ref } from "vue"
 
 export default {
     props: {
@@ -19,9 +22,46 @@ export default {
 
         const addToCart = () => emit("addToCart", props.name)
 
+        //const priceFormatted = computed(() => `$${props.price.toFixed(2)}`)
+
+        /* const priceFormatted = computed({
+            get() {
+                return `$${props.price.toFixed(2)}`
+            },
+            set(price) {
+                props.price = price
+                // this will fail as props are read-only,
+                // would need to have made a ref and then used that
+
+                // see following below
+            }
+        }) */
+
+        const priceRef = ref(props.price)
+
+        const priceFormatted = computed({
+            get() {
+                return `$${priceRef.value.toFixed(2)}`
+            },
+            set(price) {
+                const dropFormatting = (numericString) => {
+                    // cheat to end up with a proper number
+                    const regex=/[^0-9\.]/g
+                    return Number(numericString.replaceAll(regex, ''))
+                }
+                priceRef.value = dropFormatting(price)
+
+                if (priceRef.value < props.price) {
+                    priceRef.value = props.price
+                    console.log("sorry, you can't pick a lower price!")
+                }
+
+            }
+        })
+
         console.log({ "name": props.name, "price": props.price })
 
-        return { addToCart }
+        return { addToCart, priceFormatted }
     },
 }
 </script>

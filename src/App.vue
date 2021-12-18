@@ -23,6 +23,10 @@ export default {
     console.log(custom)
     // note we don't need to use .value when using reactives due to this
 
+    // however, can't re-assign reactives, must operate on their properties
+
+    // can use destructuring with reactives using toRefs function
+
     const orderProduct = () => {
       alert('Order in process')
     }

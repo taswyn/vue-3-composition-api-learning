@@ -51,6 +51,8 @@ export default {
                 }
                 priceRef.value = dropFormatting(price)
 
+                // we should really do this first and on the incoming value,
+                // not force the Ref value back
                 if (priceRef.value < props.price) {
                     priceRef.value = props.price
                     console.log("sorry, you can't pick a lower price!")
